@@ -163,10 +163,10 @@ function renderTable() {
 async function loadData() {
     const owner = "karyasahabatcerdas-ui"; 
     const repo = "temp_site";             
-    const folderPath = "./gambar"; // Ganti jika folder berbeda
+    const folderPath = "gambar"; // Ganti jika folder berbeda
 
     try {
-        const response = await fetch(`https://api.github.com{owner}/${repo}/contents/${folderPath}`);
+        const response = await fetch(`https://api.github.com{owner}/${repo}/${folderPath}`);
         const files = await response.json();
 
         if (Array.isArray(files)) {
