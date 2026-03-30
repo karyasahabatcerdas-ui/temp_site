@@ -166,7 +166,7 @@ async function loadData() {
     const folderPath = "gambar"; // Ganti jika folder berbeda
 
     try {
-        const response = await fetch(`https://api.github.com{owner}/${repo}/${folderPath}`);
+        const response = await fetch(`https://api.github.com${owner}/${repo}/${folderPath}`);
         const files = await response.json();
 
         if (Array.isArray(files)) {
