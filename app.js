@@ -90,6 +90,7 @@ async function loadImages() {
     }
 }
 */
+/*
 async function loadImages() {
     const owner = "karyasahabatcerdas-ui"; 
     const repo = "temp_site";             
@@ -113,7 +114,7 @@ async function loadImages() {
         console.error("Gagal load file:", e);
     }
 }
-
+*/
 // 4. Render Tabel
 /*
 function renderTable() {
@@ -126,6 +127,7 @@ function renderTable() {
     `).join('');
 }
 */
+/*
 function renderTable() {
     const tbody = document.getElementById('image-table-body');
     
@@ -156,6 +158,49 @@ function renderTable() {
             </tr>
         `;
     }).join('');
+}
+*/
+async function loadData() {
+    const owner = "karyasahabatcerdas-ui"; 
+    const repo = "temp_site";             
+    const folderPath = "gambar"; // Ganti jika folder berbeda
+
+    try {
+        const response = await fetch(`https://api.github.com{owner}/${repo}/contents/${folderPath}`);
+        const files = await response.json();
+
+        if (Array.isArray(files)) {
+            // Filter JPG, PNG, WEBP, dan MP4
+            imageList = files
+                .filter(file => /\.(jpe?g|png|webp|mp4)$/i.test(file.name))
+                .map(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    return {
+                        id: file.sha,
+                        url: file.download_url,
+                        type: ext === 'mp4' ? 'video' : 'image'
+                    };
+                });
+            renderTable();
+        }
+    } catch (e) {
+        console.error("Gagal ambil data:", e);
+    }
+}
+
+function renderTable() {
+    const tbody = document.getElementById('image-table-body');
+    tbody.innerHTML = imageList.map(item => `
+        <tr class="border-b">
+            <td class="p-2 text-center"><input type="checkbox" class="row-checkbox" value="${item.id}"></td>
+            <td class="p-2">
+                ${item.type === 'video' 
+                    ? `<video src="${item.url}" class="w-20 h-14 object-cover rounded" muted></video>` 
+                    : `<img src="${item.url}" class="w-16 h-16 object-cover rounded shadow">`
+                }
+            </td>
+        </tr>
+    `).join('');
 }
 
 
