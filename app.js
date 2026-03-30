@@ -24,6 +24,7 @@ async function handleLogin() {
 }
 
 // 2. Tampilkan Dashboard sesuai Role
+/*
 function showDashboard() {
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('main-page').classList.remove('hidden');
@@ -34,8 +35,25 @@ function showDashboard() {
         document.getElementById('admin-header').classList.remove('hidden');
     }
 }
+*/
+function showDashboard() {
+    document.getElementById('login-page').classList.add('hidden');
+    document.getElementById('main-page').classList.remove('hidden');
+    document.getElementById('display-user').innerText = currentUser.username;
+
+    const header = document.getElementById('admin-header');
+    
+    // Validasi: Hanya admin yang bisa lihat tombol Tambah & Hapus
+    if (currentUser.role === 'admin') {
+        header.classList.remove('hidden'); // Munculkan header
+    } else {
+        header.classList.add('hidden');    // Sembunyikan header untuk user biasa
+    }
+}
+
 
 // 3. Load Data Gambar
+/*
 async function loadImages() {
     try {
         const response = await fetch('data_gambar.json');
@@ -45,7 +63,31 @@ async function loadImages() {
         console.log("Memulai dengan list kosong");
     }
 }
+*/
+async function loadImages() {
+    const owner = "karyasahabatcerdas-ui"; // Username GitHub kamu
+    const repo = "temp_site";             // Nama repository
+    const path = "gambar";                 // Nama folder gambar
 
+    try {
+        // Mengambil daftar isi direktori dari GitHub API
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`);
+        const files = await response.json();
+
+        // Filter hanya file gambar (jpg, png, webp, dll)
+        imageList = files
+            .filter(file => /\.(jpe?g|png|gif|webp)$/i.test(file.name))
+            .map(file => ({
+                id: file.sha, // Gunakan SHA unik dari GitHub sebagai ID
+                url: file.download_url, // URL langsung untuk menampilkan gambar
+                name: file.name
+            }));
+
+        renderTable();
+    } catch (e) {
+        console.error("Gagal mengambil daftar gambar dari GitHub API", e);
+    }
+}
 // 4. Render Tabel
 function renderTable() {
     const tbody = document.getElementById('image-table-body');
