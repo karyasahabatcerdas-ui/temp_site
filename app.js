@@ -166,7 +166,6 @@ async function loadData() {
     const folderPath = "gambar"; // Ganti jika folder berbeda
 
     try {
-        //const response = await fetch(`https://api.github.com/${owner}/${repo}/contents/${folderPath}`);https://api.github.com/repos/{owner}/{repo}/contents/{path}
          const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`)
         const files = await response.json();
 
@@ -191,6 +190,29 @@ async function loadData() {
 
 function renderTable() {
     const tbody = document.getElementById('image-table-body');
+    tbody.innerHTML = imageList.map(item => {
+        const mediaTag = item.type === 'video' 
+            ? `<video src="${item.url}" class="w-full max-h-64 object-contain rounded bg-black" controls muted></video>` 
+            : `<img src="${item.url}" class="w-full max-h-80 object-contain rounded shadow-sm">`;
+
+        return `
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4 text-center align-top">
+                    <input type="checkbox" class="row-checkbox w-4 h-4" value="${item.id}">
+                </td>
+                <td class="p-2">
+                    <div class="w-full">
+                        ${mediaTag}
+                        <div class="mt-1 text-[10px] text-gray-400 uppercase">${item.type}</div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+/*
+function renderTable() {
+    const tbody = document.getElementById('image-table-body');
     tbody.innerHTML = imageList.map(item => `
         <tr class="border-b">
             <td class="p-2 text-center"><input type="checkbox" class="row-checkbox" value="${item.id}"></td>
@@ -203,7 +225,7 @@ function renderTable() {
         </tr>
     `).join('');
 }
-
+*/
 
 // 5. Upload Gambar (Camera/Gallery)
 function uploadImage(event) {

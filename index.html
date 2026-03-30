@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         .sticky-header { position: sticky; top: 0; z-index: 10; background: white; }
@@ -22,46 +22,46 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD (Hidden by default) -->
-    <div id="main-page" class="hidden flex flex-col md:flex-row min-h-screen">
-        
-        <!-- SIDEBAR (Kiri) -->
-        <div class="w-full md:w-1/4 bg-gray-800 text-white p-6 flex flex-col justify-between">
-            <div>
-                <p class="text-sm">Logged in as:</p>
-                <h3 id="display-user" class="text-lg font-bold">Admin</h3>
+    <!-- MAIN DASHBOARD -->
+<div id="main-page" class="hidden flex flex-col md:flex-row min-h-screen">
+    
+    <!-- SIDEBAR (Kiri - Diperkecil) -->
+    <div class="w-full md:w-1/6 bg-gray-800 text-white p-4 flex flex-col justify-between">
+        <div>
+            <p class="text-[10px] text-gray-400">User:</p>
+            <h3 id="display-user" class="text-sm font-bold truncate">Admin</h3>
+        </div>
+        <button onclick="handleLogout()" class="mt-4 bg-red-600 hover:bg-red-700 p-2 rounded text-xs">Logout</button>
+    </div>
+
+    <!-- CONTENT (Kanan - Memenuhi Layar) -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-white">
+        <!-- STICKY HEADER -->
+        <div id="admin-header" class="sticky top-0 z-10 bg-white border-b p-3 flex justify-between items-center shadow-sm hidden">
+            <span class="font-bold text-gray-700 text-sm">Media Manager</span>
+            <div class="flex gap-2">
+                <input type="file" id="file-input" accept="image/*,video/mp4" class="hidden" onchange="uploadImage(event)">
+                <button onclick="document.getElementById('file-input').click()" class="bg-blue-500 text-white px-3 py-1 rounded text-xs">Tambah</button>
+                <button onclick="deleteSelected()" class="bg-red-500 text-white px-3 py-1 rounded text-xs">Hapus</button>
             </div>
-            <button onclick="handleLogout()" class="mt-4 bg-red-500 p-2 rounded text-sm">Logout</button>
         </div>
 
-        <!-- CONTENT (Kanan) -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- STICKY HEADER -->
-            <div id="admin-header" class="sticky-header border-b p-4 flex justify-between items-center shadow-sm hidden">
-                <h2 class="font-semibold text-gray-700">Image Management</h2>
-                <div class="flex gap-2">
-                    <input type="file" id="file-input" accept="image/*" capture="environment" class="hidden" onchange="uploadImage(event)">
-                    <button onclick="document.getElementById('file-input').click()" class="bg-green-500 text-white px-4 py-2 rounded text-sm">Tambah</button>
-                    <button onclick="deleteSelected()" class="bg-red-500 text-white px-4 py-2 rounded text-sm">Hapus</button>
-                </div>
-            </div>
-
-            <!-- TABLE AREA -->
-            <div class="p-4 overflow-auto flex-1">
-                <table class="min-w-full bg-white border">
-                    <thead class="bg-gray-200">
-                        <tr>
-                            <th class="p-2 border w-12 text-center"><input type="checkbox" id="check-all" onclick="toggleAll(this)"></th>
-                            <th class="p-2 border text-left">Gambar</th>
-                        </tr>
-                    </thead>
-                    <tbody id="image-table-body">
-                        <!-- Data dari JSON akan muncul di sini -->
-                    </tbody>
-                </table>
-            </div>
+        <!-- TABLE AREA -->
+        <div class="overflow-auto flex-1">
+            <table class="w-full border-collapse">
+                <thead class="bg-gray-50 sticky top-0">
+                    <tr>
+                        <th class="p-3 border-b w-10 text-center"><input type="checkbox" id="check-all" onclick="toggleAll(this)"></th>
+                        <th class="p-3 border-b text-left text-xs uppercase text-gray-500">Preview Media</th>
+                    </tr>
+                </thead>
+                <tbody id="image-table-body">
+                    <!-- List dari loadData() -->
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
     <script src="app.js"></script>
 </body>
