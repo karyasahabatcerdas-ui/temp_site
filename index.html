@@ -1,8 +1,67 @@
-<!DOCHTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .sticky-header { position: sticky; top: 0; z-index: 10; background: white; }
+    </style>
+</head>
+<body class="bg-gray-100">
 
+    <!-- LOGIN PAGE -->
+    <div id="login-page" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded shadow-md w-80">
+            <h2 class="text-xl font-bold mb-4 text-center">Login</h2>
+            <input type="text" id="username" placeholder="Username" class="w-full p-2 mb-2 border rounded">
+            <input type="password" id="password" placeholder="Password" class="w-full p-2 mb-4 border rounded">
+            <button onclick="handleLogin()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Login</button>
+        </div>
+    </div>
 
+    <!-- MAIN DASHBOARD (Hidden by default) -->
+    <div id="main-page" class="hidden flex flex-col md:flex-row min-h-screen">
+        
+        <!-- SIDEBAR (Kiri) -->
+        <div class="w-full md:w-1/4 bg-gray-800 text-white p-6 flex flex-col justify-between">
+            <div>
+                <p class="text-sm">Logged in as:</p>
+                <h3 id="display-user" class="text-lg font-bold">Admin</h3>
+            </div>
+            <button onclick="handleLogout()" class="mt-4 bg-red-500 p-2 rounded text-sm">Logout</button>
+        </div>
 
+        <!-- CONTENT (Kanan) -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- STICKY HEADER -->
+            <div id="admin-header" class="sticky-header border-b p-4 flex justify-between items-center shadow-sm hidden">
+                <h2 class="font-semibold text-gray-700">Image Management</h2>
+                <div class="flex gap-2">
+                    <input type="file" id="file-input" accept="image/*" capture="environment" class="hidden" onchange="uploadImage(event)">
+                    <button onclick="document.getElementById('file-input').click()" class="bg-green-500 text-white px-4 py-2 rounded text-sm">Tambah</button>
+                    <button onclick="deleteSelected()" class="bg-red-500 text-white px-4 py-2 rounded text-sm">Hapus</button>
+                </div>
+            </div>
 
-  
+            <!-- TABLE AREA -->
+            <div class="p-4 overflow-auto flex-1">
+                <table class="min-w-full bg-white border">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-2 border w-12 text-center"><input type="checkbox" id="check-all" onclick="toggleAll(this)"></th>
+                            <th class="p-2 border text-left">Gambar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="image-table-body">
+                        <!-- Data dari JSON akan muncul di sini -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
 </html>

@@ -1,0 +1,96 @@
+let currentUser = null;
+let imageList = [];
+
+// 1. Fungsi Login
+async function handleLogin() {
+    const userIn = document.getElementById('username').value;
+    const passIn = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('users.json');
+        const data = await response.json();
+        const user = data.users.find(u => u.username === userIn && u.password === passIn);
+
+        if (user) {
+            currentUser = user;
+            showDashboard();
+            loadImages();
+        } else {
+            alert('Username atau password salah!');
+        }
+    } catch (e) {
+        console.error("Gagal load user.json", e);
+    }
+}
+
+// 2. Tampilkan Dashboard sesuai Role
+function showDashboard() {
+    document.getElementById('login-page').classList.add('hidden');
+    document.getElementById('main-page').classList.remove('hidden');
+    document.getElementById('display-user').innerText = currentUser.username;
+
+    // Tampilkan header hanya untuk admin
+    if (currentUser.role === 'admin') {
+        document.getElementById('admin-header').classList.remove('hidden');
+    }
+}
+
+// 3. Load Data Gambar
+async function loadImages() {
+    try {
+        const response = await fetch('data_gambar.json');
+        imageList = await response.json();
+        renderTable();
+    } catch (e) {
+        console.log("Memulai dengan list kosong");
+    }
+}
+
+// 4. Render Tabel
+function renderTable() {
+    const tbody = document.getElementById('image-table-body');
+    tbody.innerHTML = imageList.map(img => `
+        <tr class="border-b">
+            <td class="p-2 text-center"><input type="checkbox" class="row-checkbox" value="${img.id}"></td>
+            <td class="p-2"><img src="${img.url}" class="w-16 h-16 object-cover rounded shadow"></td>
+        </tr>
+    `).join('');
+}
+
+// 5. Upload Gambar (Camera/Gallery)
+function uploadImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const newImg = {
+                id: Date.now(),
+                url: e.target.result // Simpan base64 untuk simulasi testing
+            };
+            imageList.push(newImg);
+            renderTable();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// 6. Hapus Terpilih
+function deleteSelected() {
+    const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+    const idsToDelete = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    
+    imageList = imageList.filter(img => !idsToDelete.includes(img.id));
+    renderTable();
+    document.getElementById('check-all').checked = false;
+}
+
+// 7. Checkbox All
+function toggleAll(source) {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+    checkboxes.forEach(cb => cb.checked = source.checked);
+}
+
+// 8. Logout
+function handleLogout() {
+    location.reload(); // Refresh halaman untuk reset state
+}
