@@ -64,6 +64,7 @@ async function loadImages() {
     }
 }
 */
+/*
 async function loadImages() {
     const owner = "karyasahabatcerdas-ui"; // Username GitHub kamu
     const repo = "temp_site";             // Nama repository
@@ -88,7 +89,33 @@ async function loadImages() {
         console.error("Gagal mengambil daftar gambar dari GitHub API", e);
     }
 }
+*/
+async function loadImages() {
+    const owner = "karyasahabatcerdas-ui"; 
+    const repo = "temp_site";             
+    const path = "gambar"; // Pastikan video juga ditaruh di sini atau sesuaikan foldernya
+
+    try {
+        const response = await fetch(`https://api.github.com{owner}/${repo}/contents/${path}`);
+        const files = await response.json();
+
+        if (Array.isArray(files)) {
+            imageList = files
+                .filter(file => /\.(jpe?g|png|webp|mp4)$/i.test(file.name)) // Tambah mp4 di sini
+                .map(file => ({
+                    id: file.sha,
+                    url: file.download_url,
+                    type: file.name.split('.').pop().toLowerCase() // Simpan tipe filenya
+                }));
+            renderTable();
+        }
+    } catch (e) {
+        console.error("Gagal load file:", e);
+    }
+}
+
 // 4. Render Tabel
+/*
 function renderTable() {
     const tbody = document.getElementById('image-table-body');
     tbody.innerHTML = imageList.map(img => `
@@ -98,6 +125,39 @@ function renderTable() {
         </tr>
     `).join('');
 }
+*/
+function renderTable() {
+    const tbody = document.getElementById('image-table-body');
+    
+    tbody.innerHTML = imageList.map(item => {
+        let content = '';
+
+        // Cek apakah filenya video mp4
+        if (item.type === 'mp4') {
+            content = `
+                <video class="w-24 h-16 object-cover rounded shadow" muted>
+                    <source src="${item.url}" type="video/mp4">
+                    Browser tidak support video.
+                </video>`;
+        } else {
+            // Jika gambar (webp, jpg, dll)
+            content = `<img src="${item.url}" class="w-16 h-16 object-cover rounded shadow">`;
+        }
+
+        return `
+            <tr class="border-b">
+                <td class="p-2 text-center">
+                    <input type="checkbox" class="row-checkbox" value="${item.id}">
+                </td>
+                <td class="p-2 flex items-center gap-4">
+                    ${content}
+                    <span class="text-xs text-gray-500">${item.type.toUpperCase()}</span>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
 
 // 5. Upload Gambar (Camera/Gallery)
 function uploadImage(event) {
